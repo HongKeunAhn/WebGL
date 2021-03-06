@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL</title>
+</head>
+<style>
+    body {
+      background: #e3f2fd
+    }
+
+    svg {
+      font-family: 'Russo One', sans-serif;
+      position: absolute; 
+      width: 100%; height: 100%;
+    }
+    svg text {
+      text-transform: uppercase;
+      animation: stroke 5s infinite alternate;
+      stroke-width: 2;
+      stroke: #365fa0;
+      font-size: 140px;
+    }
+    @keyframes stroke {
+      0%   {
+        fill: rgba(72,138,20,0); stroke: rgba(54,95,160,1);
+        stroke-dashoffset: 25%; stroke-dasharray: 0 50%; stroke-width: 2;
+      }
+      70%  {fill: rgba(72,138,20,0); stroke: rgba(54,95,160,1); }
+      80%  {fill: rgba(72,138,20,0); stroke: rgba(54,95,160,1); stroke-width: 3; }
+      100% {
+        fill: rgba(72,138,204,1); stroke: rgba(54,95,160,0); 
+        stroke-dashoffset: -25%; stroke-dasharray: 50% 0; stroke-width: 0;
+      }
+    }
+
+    /* #canvas {
+      width: 100vw;
+      height: 100vh;
+    } */
+</style>
+<body>
+    <canvas id="canvas" width="800px" height="100px"></canvas>
+    <!-- <svg viewBox="0 0 1320 300">
+        <text x="50%" y="50%" dy=".35em" text-anchor="middle">
+          Sixshop
+        </text>
+      </svg>   -->
+      <script>
+          var canvas = document.getElementById('canvas');
+          var ctx = canvas.getContext('2d');
+          var raf;
+          var running = false;
+
+          var ball = {
+            x: 100,
+            y: 100,
+            vx: 10,
+            vy: 10,
+            radius: 25,
+            color: 'blue',
+            draw: function() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+              ctx.closePath();
+              ctx.fillStyle = this.color;
+              ctx.fill();
+            }
+          };
+
+          function clear() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+          }
+
+          function draw() {
+            clear();
+            ball.draw();
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            if (ball.y + ball.vy > canvas.height || ball.y + ball.vy < 0) {
+              ball.vy = -ball.vy;
+            }
+            if (ball.x + ball.vx > canvas.width || ball.x + ball.vx < 0) {
+              ball.vx = -ball.vx;
+            }
+
+            raf = window.requestAnimationFrame(draw);
+          }
+
+          canvas.addEventListener('mousemove', function(e) {
+            if (!running) {
+              clear();
+              ball.x = e.clientX;
+              ball.y = e.clientY;
+              ball.draw();
+            }
+          });
+
+          canvas.addEventListener('click', function(e) {
+            if (!running) {
+              raf = window.requestAnimationFrame(draw);
+              running = true;
+            }
+          });
+
+          // canvas.addEventListener('mouseout', function(e) {
+          //   window.cancelAnimationFrame(raf);
+          //   running = false;
+          // });
+
+          ball.draw();
+      </script>
+</body>
+</html>
